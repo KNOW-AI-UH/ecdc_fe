@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: know_ai_app:latest
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 5173:5173
+    container_name: know_ai_app
+    # command: 'sleep infinity'

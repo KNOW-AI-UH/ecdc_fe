@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 Outbreak Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 24px;
+            height: calc(100% - 24px);
+            width: 2px;
+            background: #e5e7eb;
+        }
+        .news-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="mb-10">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl md:text-4xl font-bold text-indigo-800">
+                    <i class="fas fa-virus mr-3 text-red-500"></i> COVID-19 Outbreak Tracker
+                </h1>
+                <div class="text-sm text-gray-500">
+                    Last updated: <span id="current-date" class="font-medium text-gray-700"></span>
+                </div>
+            </div>
+            <p class="text-lg text-gray-600 max-w-3xl">
+                Comprehensive tracking of COVID-19 outbreaks worldwide with detailed news analysis and timeline visualization.
+            </p>
+        </header>
+
+        <!-- Time Granularity Selector -->
+        <div class="bg-white rounded-lg shadow p-4 mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Time Granularity</h2>
+            <div class="flex flex-wrap gap-4">
+                <div class="flex items-center">
+                    <input type="radio" id="weekly" name="time-granularity" class="h-4 w-4 text-indigo-600" checked>
+                    <label for="weekly" class="ml-2 text-gray-700">Weekly</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" id="monthly" name="time-granularity" class="h-4 w-4 text-indigo-600">
+                    <label for="monthly" class="ml-2 text-gray-700">Monthly</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="radio" id="yearly" name="time-granularity" class="h-4 w-4 text-indigo-600">
+                    <label for="yearly" class="ml-2 text-gray-700">Yearly</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Outbreaks Summary -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="bg-indigo-700 px-6 py-4">
+                        <h2 class="text-xl font-semibold text-white">Recent Outbreaks Summary</h2>
+                    </div>
+                    <div class="p-6">
+                        <!-- Outbreak Item 1 -->
+                        <div class="mb-10 pb-6 border-b border-gray-200 last:border-0">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-lg font-semibold text-gray-800">New Variant BA.5 Spread in Europe</h3>
+                                <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">Active</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-500 mb-4">
+                                <i class="fas fa-calendar-alt mr-2"></i>
+                                <span>June 12 - June 18, 2023</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">
+                                The BA.5 variant now accounts for over 65% of cases in Europe, with hospitalization rates increasing by 23% compared to last week.
+                            </p>
+                            
+                            <!-- News Cards -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <!-- News Card 1 -->
+                                <div class="news-card bg-gray-50 rounded-lg p-4 cursor-pointer transition-all duration-200 border border-gray-200 hover:border-indigo-300" onclick="showEventExtraction(1)">
+                                    <h4 class="font-medium text-gray-800 mb-2">WHO warns about BA.5 variant's rapid spread</h4>
+                                    <p class="text-sm text-gray-500 mb-2">Reuters • June 15, 2023</p>
+                                    <div class="flex flex-wrap gap-1">
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">WHO</span>
+                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Variant</span>
+                                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">Europe</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- News Card 2 -->
+                                <div class="news-card bg-gray-50 rounded-lg p-4 cursor-pointer transition-all duration-200 border border-gray-200 hover:border-indigo-300" onclick="showEventExtraction(2)">
+                                    <h4 class="font-medium text-gray-800 mb-2">France reports highest COVID cases since January</h4>
+                                    <p class="text-sm text-gray-500 mb-2">AFP • June 14, 2023</p>
+                                    <div class="flex flex-wrap gap-1">
+                                        <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">France</span>
+                                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">Cases</span>
+                                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">Hospitalization</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-indigo-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-indigo-800 mb-2 flex items-center">
+                                    <i class="fas fa-chart-line mr-2"></i> Outbreak Summary
+                                </h4>
+                                <p class="text-gray-700">
+                                    The BA.5 variant is driving a new wave across Europe with increased transmissibility. Countries are considering reintroducing mask mandates in healthcare settings. Vaccine effectiveness against severe disease remains high (85%).
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Outbreak Item 2 -->
+                        <div class="mb-10 pb-6 border-b border-gray-200 last:border-0">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="text-lg font-semibold text-gray-800">Hospital Capacity Strain in US Northeast</h3>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Monitoring</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-500 mb-4">
+                                <i class="fas fa-calendar-alt mr-2"></i>
+                                <span>June 5 - June 11, 2023</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">
+                                Several hospitals in New York and Massachusetts report ICU bed shortages as COVID admissions rise by 18% week-over-week.
+                            </p>
+                            
+                            <!-- News Cards -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <!-- News Card 3 -->
+                                <div class="news-card bg-gray-50 rounded-lg p-4 cursor-pointer transition-all duration-200 border border-gray-200 hover:border-indigo-300" onclick="showEventExtraction(3)">
+                                    <h4 class="font-medium text-gray-800 mb-2">NYC hospitals activate emergency protocols</h4>
+                                    <p class="text-sm text-gray-500 mb-2">New York Times • June 8, 2023</p>
+                                    <div class="flex flex-wrap gap-1">
+                                        <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">New York</span>
+                                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">Hospitals</span>
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Emergency</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- News Card 4 -->
+                                <div class="news-card bg-gray-50 rounded-lg p-4 cursor-pointer transition-all duration-200 border border-gray-200 hover:border-indigo-300" onclick="showEventExtraction(4)">
+                                    <h4 class="font-medium text-gray-800 mb-2">CDC updates travel guidelines for Northeast states</h4>
+                                    <p class="text-sm text-gray-500 mb-2">CNN • June 6, 2023</p>
+                                    <div class="flex flex-wrap gap-1">
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">CDC</span>
+                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Travel</span>
+                                        <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">Northeast</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-indigo-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-indigo-800 mb-2 flex items-center">
+                                    <i class="fas fa-chart-line mr-2"></i> Outbreak Summary
+                                </h4>
+                                <p class="text-gray-700">
+                                    The US Northeast is experiencing localized surges, particularly in urban areas. While overall national numbers remain stable, regional healthcare systems are under pressure. The CDC recommends high-risk individuals take additional precautions.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timeline Section -->
+            <div>
+                <div class="bg-white rounded-lg shadow overflow-hidden sticky top-4">
+                    <div class="bg-indigo-700 px-6 py-4">
+                        <h2 class="text-xl font-semibold text-white">Outbreak Timeline</h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <!-- Timeline Item -->
+                            <div class="relative timeline-item pl-6">
+                                <div class="absolute left-0 top-0 w-4 h-4 rounded-full bg-indigo-500 border-4 border-indigo-100"></div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <div class="flex justify-between items-start">
+                                        <h4 class="font-medium text-gray-800">BA.5 Dominance</h4>
+                                        <span class="text-xs text-gray-500">Jun 18</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">BA.5 becomes dominant variant in Europe</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Timeline Item -->
+                            <div class="relative timeline-item pl-6">
+                                <div class="absolute left-0 top-0 w-4 h-4 rounded-full bg-indigo-500 border-4 border-indigo-100"></div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <div class="flex justify-between items-start">
+                                        <h4 class="font-medium text-gray-800">NYC Emergency</h4>
+                                        <span class="text-xs text-gray-500">Jun 8</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">NYC hospitals activate emergency protocols</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Timeline Item -->
+                            <div class="relative timeline-item pl-6">
+                                <div class="absolute left-0 top-0 w-4 h-4 rounded-full bg-indigo-500 border-4 border-indigo-100"></div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <div class="flex justify-between items-start">
+                                        <h4 class="font-medium text-gray-800">WHO Warning</h4>
+                                        <span class="text-xs text-gray-500">Jun 1</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">WHO issues warning about summer surge</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Timeline Item -->
+                            <div class="relative timeline-item pl-6">
+                                <div class="absolute left-0 top-0 w-4 h-4 rounded-full bg-indigo-500 border-4 border-indigo-100"></div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <div class="flex justify-between items-start">
+                                        <h4 class="font-medium text-gray-800">Vaccine Update</h4>
+                                        <span class="text-xs text-gray-500">May 25</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mt-1">New bivalent vaccines show 75% efficacy against BA.5</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                <i class="fas fa-history mr-2"></i> View Full Timeline
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Event Extraction Modal -->
+    <div id="event-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto fade-in">
+            <div class="bg-indigo-700 px-6 py-4 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-white">Event Extraction Results</h3>
+                <button onclick="hideEventExtraction()" class="text-white hover:text-gray-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div id="modal-content">
+                    <!-- Content will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Set current date
+        const now = new Date();
+        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        // Sample event extraction data
+        const eventData = {
+            1: {
+                title: "WHO warns about BA.5 variant's rapid spread",
+                date: "June 15, 2023",
+                source: "Reuters",
+                summary: "The World Health Organization issued a warning about the rapid spread of the BA.5 Omicron subvariant across Europe, noting its increased transmissibility and ability to evade some immunity.",
+                entities: [
+                    { name: "WHO", type: "Organization", relevance: "High" },
+                    { name: "BA.5", type: "Variant", relevance: "High" },
+                    { name: "Europe", type: "Location", relevance: "High" },
+                    { name: "Transmissibility", type: "Characteristic", relevance: "Medium" }
+                ],
+                actions: [
+                    { action: "Warning issued", actor: "WHO", target: "Public health authorities" },
+                    { action: "Spread observed", actor: "BA.5 variant", target: "European countries" }
+                ],
+                stats: [
+                    { metric: "Case increase", value: "65%", period: "past 2 weeks" },
+                    { metric: "Vaccine efficacy", value: "85%", against: "severe disease" }
+                ]
+            },
+            2: {
+                title: "France reports highest COVID cases since January",
+                date: "June 14, 2023",
+                source: "AFP",
+                summary: "France has recorded its highest number of weekly COVID-19 cases since January 2023, with health officials attributing the surge to the BA.5 variant and increased summer travel.",
+                entities: [
+                    { name: "France", type: "Location", relevance: "High" },
+                    { name: "BA.5", type: "Variant", relevance: "High" },
+                    { name: "Health Ministry", type: "Organization", relevance: "Medium" },
+                    { name: "Summer travel", type: "Activity", relevance: "Medium" }
+                ],
+                actions: [
+                    { action: "Cases reported", actor: "France", target: "Public" },
+                    { action: "Surge attributed", actor: "Health officials", target: "BA.5 variant" }
+                ],
+                stats: [
+                    { metric: "Weekly cases", value: "125,000", comparison: "highest since January" },
+                    { metric: "Hospitalizations", value: "18% increase", period: "week-over-week" }
+                ]
+            }
+        };
+        
+        // Show event extraction modal
+        function showEventExtraction(id) {
+            const event = eventData[id];
+            const modal = document.getElementById('event-modal');
+            const content = document.getElementById('modal-content');
+            
+            if (!event) {
+                content.innerHTML = `<p class="text-gray-600">No event data available for this selection.</p>`;
+                modal.classList.remove('hidden');
+                return;
+            }
+            
+            // Build entities HTML
+            let entitiesHtml = event.entities.map(entity => `
+                <div class="bg-gray-50 p-3 rounded-lg mb-3">
+                    <div class="flex justify-between items-start">
+                        <span class="font-medium text-gray-800">${entity.name}</span>
+                        <span class="text-xs px-2 py-1 rounded ${getEntityColorClass(entity.type)}">${entity.type}</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mt-1">Relevance: ${entity.relevance}</div>
+                </div>
+            `).join('');
+            
+            // Build actions HTML
+            let actionsHtml = event.actions.map(action => `
+                <div class="border-l-4 border-indigo-200 pl-3 mb-3">
+                    <div class="text-sm font-medium text-gray-800">${action.action}</div>
+                    <div class="text-xs text-gray-500">Actor: ${action.actor}</div>
+                    <div class="text-xs text-gray-500">Target: ${action.target}</div>
+                </div>
+            `).join('');
+            
+            // Build stats HTML
+            let statsHtml = event.stats.map(stat => `
+                <div class="flex items-center py-2 border-b border-gray-100 last:border-0">
+                    <div class="w-1/3 font-medium text-gray-700">${stat.metric}</div>
+                    <div class="w-1/3 text-indigo-600 font-medium">${stat.value}</div>
+                    <div class="w-1/3 text-xs text-gray-500">${stat.period || stat.comparison || ''}</div>
+                </div>
+            `).join('');
+            
+            // Combine all content
+            content.innerHTML = `
+                <h4 class="text-xl font-semibold text-gray-800 mb-2">${event.title}</h4>
+                <div class="flex items-center text-sm text-gray-500 mb-4">
+                    <i class="fas fa-newspaper mr-2"></i> ${event.source} • ${event.date}
+                </div>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                    <h5 class="font-medium text-blue-800 mb-2">Summary</h5>
+                    <p class="text-gray-700">${event.summary}</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h5 class="font-medium text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-tags mr-2 text-indigo-600"></i> Extracted Entities
+                        </h5>
+                        ${entitiesHtml}
+                    </div>
+                    <div>
+                        <h5 class="font-medium text-gray-800 mb-3 flex items-center">
+                            <i class="fas fa-bolt mr-2 text-indigo-600"></i> Actions & Events
+                        </h5>
+                        ${actionsHtml}
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 class="font-medium text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-chart-bar mr-2 text-indigo-600"></i> Key Statistics
+                    </h5>
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        ${statsHtml}
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+        
+        // Hide event extraction modal
+        function hideEventExtraction() {
+            document.getElementById('event-modal').classList.add('hidden');
+        }
+        
+        // Helper function for entity type colors
+        function getEntityColorClass(type) {
+            const colors = {
+                'Organization': 'bg-blue-100 text-blue-800',
+                'Variant': 'bg-green-100 text-green-800',
+                'Location': 'bg-red-100 text-red-800',
+                'Characteristic': 'bg-purple-100 text-purple-800',
+                'Activity': 'bg-yellow-100 text-yellow-800'
+            };
+            return colors[type] || 'bg-gray-100 text-gray-800';
+        }
+        
+        // Time granularity selection
+        document.querySelectorAll('input[name="time-granularity"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // In a real app, this would fetch data based on the selected time granularity
+                console.log(`Time granularity changed to: ${this.id}`);
+            });
+        });
+    </script>
+</body>
+</html>
