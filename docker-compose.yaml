@@ -1,0 +1,19 @@
+
+
+services:
+  app:
+    image: ghcr.io/know-ai-uh/ecdc_fe:latest
+    volumes:
+      - ./app/data:/usr/src/app/data
+    ports:
+      - 5173:5173
+    container_name: ecdc_fe
+    # command: 'sleep infinity'
+
+  watchtower:
+    restart: unless-stopped
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # - /root/.docker/config.json:/config.json
+    command: --interval 30
