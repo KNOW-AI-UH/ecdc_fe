@@ -136,3 +136,4 @@ dist
 .pnp.*
 
 app/data/*
+ecdc.html
