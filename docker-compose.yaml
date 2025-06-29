@@ -4,7 +4,7 @@ services:
   app:
     image: ghcr.io/know-ai-uh/ecdc_fe:latest
     volumes:
-      - ./app/data:/usr/src/app/data
+      - ./data:/usr/src/app/data
     ports:
       - 5173:5173
     container_name: ecdc_fe

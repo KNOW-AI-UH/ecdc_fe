@@ -19,9 +19,13 @@ function App() {
   }
 
   // timestamp to display in the header
+  const { 
+    groups,
+    timestamp,
+    timeline
+  } = data[view]
 
-
-  const date = new Date(data[view].timestamp * 1000 ).toLocaleDateString('en-US', {
+  const date = new Date(timestamp * 1000 ).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -30,10 +34,8 @@ function App() {
     timeZone: 'UTC',
     timeZoneName: 'short'
   })
-  useEffect(() => {
-    console.log('Current view:', view)
-    console.log('Data for current view:', data[view])
-  }, [view])
+  console.log('Current view:', view)
+  console.log('Data for current view:', data[view])
   return (
     <>
       <div className="container mx-auto px-4 py-8">
@@ -78,10 +80,10 @@ function App() {
         )}
 
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="">
 
-          <Summary data={data[view].summaries} />
-          <Timeline timeline={data[view].timeline} />
+          <Summary data={groups} timestamp={timestamp} />
+          {timeline && <Timeline timeline={timeline} />}
         </div>
       </div>
     </>
