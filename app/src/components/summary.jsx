@@ -87,7 +87,7 @@ const Event = ({ event }) => {
                             <div id="modal-content">
                                 <h4 className="text-xl font-semibold text-gray-800 mb-2"> {title} </h4>
                                 <div className="flex justify-between items-center mb-4">
-                                    <div className="flex items-center text-sm text-gray-500 mb-4">
+                                        <div className="flex items-center text-sm text-gray-500 ">
                                         <FontAwesomeIcon icon={faNewspaper} className="mr-2" />
                                         {locationStringShort} - {date.value}
 
