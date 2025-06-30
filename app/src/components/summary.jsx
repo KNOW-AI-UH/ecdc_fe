@@ -1,33 +1,62 @@
 import { useState, useEffect, } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { faVirus, faCalendarAlt, faTimes, faChartLine } from '@fortawesome/free-solid-svg-icons'
+import {
+    faCalendarAlt,
+    faTimes,
+    faChartLine,
+    faNewspaper,
+    faTags,
+    faBolt,
+    faChartBar
+} from '@fortawesome/free-solid-svg-icons'
 
 const Event = ({ event }) => { 
     const [open, setOpen] = useState(false)
     const {
         disease_name_text: title,
+        location_of_the_outbreak: location,
         entities,
         actions,
-        statistics,
+        number_of_cases,
+        number_of_deaths,
         summary,
-        outbreak_start_date: date
+        outbreak_start_date: date,
+        is_the_outbreak_over: is_over,
     } = event
+
+    const statusStringMapper = {
+        yes: 'Over',
+        no: 'Ongoing',
+        unknown: 'Unknown',
+    }
+    const statusStyleMapper = {
+        yes: 'red',
+        no: 'blue',
+        unknown: 'yellow',
+    }
+
     const dateFormat = {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
     }
 
+    const statistics = [
+        { label: 'Total Cases', value: number_of_cases.value, description: '' },
+        { label: 'Total Deaths', value: number_of_deaths.value, description: '' },
+    ]
+
     const randomColor = () => {
         const colors = ['red', 'blue', 'green', 'yellow', 'purple']
         return colors[Math.floor(Math.random() * colors.length)]
     }
+    const locationStringShort = location.value.length > 30 ? `${location.value.slice(0, 30)}...` : location.value
 
     return (
         <div className="bg-white rounded-lg p-4 shadow hover:shadow-lg transition-shadow duration-200 cursor-pointer" onClick={() => setOpen(true)}>
             <h4 className="font-medium text-gray-800 mb-2">{title}</h4>
-            <p className="text-sm text-gray-500 mb-2">{date.value}</p>
+            <p className="text-sm text-gray-500 mb-2">{ location.value } - {date.value}</p>
             {/* <div className="flex flex-wrap gap-1">
                 {entities.map((entity, entityIndex) => {
                     const color = randomColor()
@@ -56,38 +85,47 @@ const Event = ({ event }) => {
                         </div>
                         <div className="p-6">
                             <div id="modal-content">
-                                    <h4 class="text-xl font-semibold text-gray-800 mb-2"> {title} </h4>
-                                <div class="flex items-center text-sm text-gray-500 mb-4">
-                                    <i class="fas fa-newspaper mr-2"></i> {date.value }
-                                </div>
+                                <h4 className="text-xl font-semibold text-gray-800 mb-2"> {title} </h4>
+                                <div className="flex justify-between items-center mb-4">
+                                    <div className="flex items-center text-sm text-gray-500 mb-4">
+                                        <FontAwesomeIcon icon={faNewspaper} className="mr-2" />
+                                        {locationStringShort} - {date.value}
 
+                                    </div>
+                                    <span className={
+                                        `bg-${statusStyleMapper[is_over.value.toLowerCase()]}-100 text-${statusStyleMapper[is_over.value.toLowerCase()]}-800 text-xs font-medium px-2.5 py-0.5 rounded`}>
+                                        {statusStringMapper[is_over.value.toLowerCase()]}
+                                    </span>            
+                                </div>
+                                
                                 {
                                     summary?.length  && (
-                                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
-                                            <h5 class="font-medium text-blue-800 mb-2">Summary</h5>
-                                            <p class="text-gray-700"> { summary } </p>
+                                        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                                            <h5 className="font-medium text-blue-800 mb-2">Summary</h5>
+                                            <p className="text-gray-700"> { summary } </p>
                                         </div>
                                     )       
                                 }
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                     {
                                         entities?.length && (
                                             <div>
-                                                <h5 class="font-medium text-gray-800 mb-3 flex items-center">
-                                                    <i class="fas fa-tags mr-2 text-indigo-600"></i> Extracted Entities
+                                                <h5 className="font-medium text-gray-800 mb-3 flex items-center">
+                                                    <FontAwesomeIcon icon={faTags} className="mr-2 text-indigo-600" />    
+                                                    Extracted Entities
                                                 </h5>
 
                                                 {
                                                     entities.map((entity, index) => (
-                                                        <div key={index} class="bg-gray-50 p-3 rounded-lg mb-3">
-                                                            <div class="flex justify-between items-start">
-                                                                <span class="font-medium text-gray-800">{entity.name}</span>
-                                                                <span class={`text-xs px-2 py-1 rounded bg-${entity.type.color}-100 text-${entity.type.color}-800`}>
+                                                        <div key={index} className="bg-gray-50 p-3 rounded-lg mb-3">
+                                                            <div className="flex justify-between items-start">
+                                                                <span className="font-medium text-gray-800">{entity.name}</span>
+                                                                <span className={`text-xs px-2 py-1 rounded bg-${entity.type.color}-100 text-${entity.type.color}-800`}>
                                                                     {entity.type.label}
                                                                 </span>
                                                             </div>
-                                                            <div class="text-sm text-gray-600 mt-1">Relevance: {entity.relevance}</div>
+                                                            <div className="text-sm text-gray-600 mt-1">Relevance: {entity.relevance}</div>
                                                         </div>
                                                     ))
                                                 }
@@ -97,16 +135,17 @@ const Event = ({ event }) => {
                                     { 
                                         actions?.length && (
                                             <div>
-                                                <h5 class="font-medium text-gray-800 mb-3 flex items-center">
-                                                    <i class="fas fa-bolt mr-2 text-indigo-600"></i> Actions &amp; Events
+                                                <h5 className="font-medium text-gray-800 mb-3 flex items-center">
+                                                    <FontAwesomeIcon icon={faBolt} className="mr-2 text-indigo-600" />    
+                                                    Actions &amp; Events
                                                 </h5>
 
                                                 {
                                                     actions.map((action, index) => (
-                                                        <div class="border-l-4 border-indigo-200 pl-3 mb-3">
-                                                            <div class="text-sm font-medium text-gray-800"> {action.action}</div>
-                                                            <div class="text-xs text-gray-500">Actor: {action.actor}</div>
-                                                            <div class="text-xs text-gray-500">Target: {action.target}</div>
+                                                        <div className="border-l-4 border-indigo-200 pl-3 mb-3">
+                                                            <div className="text-sm font-medium text-gray-800"> {action.action}</div>
+                                                            <div className="text-xs text-gray-500">Actor: {action.actor}</div>
+                                                            <div className="text-xs text-gray-500">Target: {action.target}</div>
                                                         </div>
                                                     ))
                                                 }
@@ -117,16 +156,17 @@ const Event = ({ event }) => {
                                 </div>
 
                                 {statistics?.length && (<div>
-                                    <h5 class="font-medium text-gray-800 mb-3 flex items-center">
-                                        <i class="fas fa-chart-bar mr-2 text-indigo-600"></i> Key Statistics
+                                    <h5 className="font-medium text-gray-800 mb-3 flex items-center">
+                                        <FontAwesomeIcon icon={faChartBar} className="mr-2 text-indigo-600" />     
+                                        Key Statistics
                                     </h5>
-                                    <div class="bg-gray-50 rounded-lg p-3">
+                                    <div className="bg-gray-50 rounded-lg p-3">
                                         { 
                                             statistics.map((stat, index) => (
-                                                <div key={index} class="flex items-center py-2 border-b border-gray-100 last:border-0">
-                                                    <div class="w-1/3 font-medium text-gray-700">{stat.label}</div>
-                                                    <div class="w-1/3 text-indigo-600 font-medium">{stat.value}</div>
-                                                    <div class="w-1/3 text-xs text-gray-500">{stat.description}</div>
+                                                <div key={index} className="flex items-center py-2 border-b border-gray-100 last:border-0">
+                                                    <div className="w-1/3 font-medium text-gray-700">{stat.label}</div>
+                                                    <div className="w-1/3 text-indigo-600 font-medium">{stat.value}</div>
+                                                    <div className="w-1/3 text-xs text-gray-500">{stat.description}</div>
                                                 </div>
                                             ))
                                         }
