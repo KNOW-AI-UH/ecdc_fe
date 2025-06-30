@@ -28,12 +28,12 @@ const Event = ({ event }) => {
     const statusStringMapper = {
         yes: 'Over',
         no: 'Ongoing',
-        unknown: 'Unknown',
+        unknown: 'Unknown status',
     }
     const statusStyleMapper = {
-        yes: 'red',
-        no: 'blue',
-        unknown: 'yellow',
+        yes: 'blue-800',
+        no: 'red-500',
+        unknown: 'gray-800',
     }
 
     const dateFormat = {
@@ -91,9 +91,10 @@ const Event = ({ event }) => {
                                         <FontAwesomeIcon icon={faNewspaper} className="mr-2" />
                                         {locationStringShort} - {date.value}
 
-                                    </div>
+                                        </div>
+                                    
                                     <span className={
-                                        `bg-${statusStyleMapper[is_over.value.toLowerCase()]}-100 text-${statusStyleMapper[is_over.value.toLowerCase()]}-800 text-xs font-medium px-2.5 py-0.5 rounded`}>
+                                        `text-${statusStyleMapper[is_over.value.toLowerCase()]} text-xs font-medium px-2.5 py-0.5 rounded`}>
                                         {statusStringMapper[is_over.value.toLowerCase()]}
                                     </span>            
                                 </div>
