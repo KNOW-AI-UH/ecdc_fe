@@ -6,7 +6,7 @@ services:
     volumes:
       - ./data:/usr/src/app/data
     ports:
-      - 5173:5173
+      - 8000:8000
     container_name: ecdc_fe
     # command: 'sleep infinity'
 

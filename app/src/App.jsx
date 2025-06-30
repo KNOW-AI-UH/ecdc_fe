@@ -1,29 +1,55 @@
 import { useState, useEffect, } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faVirus, faCalendarAlt, faHistory, faChartLine } from '@fortawesome/free-solid-svg-icons'
-import weekly from '../data/weekly.json' with { type: 'json' }
-import monthly from '../data/monthly.json' with { type: 'json' }
-import yearly from '../data/yearly.json' with { type: 'json' }
+import { faVirus } from '@fortawesome/free-solid-svg-icons'
 import { hiddenFeature } from './common.jsx'
 import Summary from './components/summary.jsx'
 import Timeline from './components/timeline.jsx'
+import { getData } from './connection.jsx'
 import './App.css'
 
 
 function App() {
+  const timeSpan = ['weekly', 'monthly', 'yearly']
   const [view, setView] = useState('weekly')
-  const data = {
-    weekly,
-    monthly,
-    yearly
+  const [data, setData] = useState({
+    groups: [],
+    timestamp: 0,
+    timeline: [],
+    status: 'init'
+  })
+
+  const isLoading = data.status === 'init' || data.status === 'loading'
+  
+  useEffect(() => { 
+    changeView(view)
+  }, [])
+
+  const changeView = (newView) => { 
+    setView(newView)
+    setData({
+      ...data,
+      status: 'loading'
+    })
+    getData(newView).then((data) => {
+      setData(data)
+    }).catch((error) => {
+      console.error('Error fetching data:', error)
+      setData({
+        groups: [],
+        timestamp: 0,
+        timeline: [],
+        status: 'error'
+      })
+    })
+    console.log('Current view:', newView)
   }
 
-  // timestamp to display in the header
-  const { 
+  
+  const {
     groups,
     timestamp,
     timeline
-  } = data[view]
+  } = data
 
   const date = new Date(timestamp * 1000 ).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -34,8 +60,8 @@ function App() {
     timeZone: 'UTC',
     timeZoneName: 'short'
   })
-  console.log('Current view:', view)
-  console.log('Data for current view:', data[view])
+  
+  // console.log('Data for current view:', data[view])
   return (
     <>
       <div className="container mx-auto px-4 py-8">
@@ -55,36 +81,44 @@ function App() {
           </p>
         </header>
 
+        { 
+          isLoading ? (
+            <p className='text-gray-800'>Loading....</p>
+          ) : (
+          <>
+            { hiddenFeature && (
+              <div className="bg-white rounded-lg shadow p-4 mb-8">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Time Granularity</h2>
+                <div className="flex flex-wrap gap-4">
+                  {
+                    timeSpan.map((key) => (
+                      <div key={key} className="flex items-center">
+                        <input
+                          type="radio"
+                          id={key}
+                          name="time-granularity"
+                          className="h-4 w-4 text-indigo-600"
+                          checked={view === key}
+                          onChange={() => changeView(key)}
+                        />
+                        <label htmlFor={key} className="ml-2 text-gray-700 capitalize">{key}</label>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
+            )}
 
-        { hiddenFeature && (
-          <div className="bg-white rounded-lg shadow p-4 mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Time Granularity</h2>
-            <div className="flex flex-wrap gap-4">
-              {
-                Object.keys(data).map((key) => (
-                  <div key={key} className="flex items-center">
-                    <input
-                      type="radio"
-                      id={key}
-                      name="time-granularity"
-                      className="h-4 w-4 text-indigo-600"
-                      checked={view === key}
-                      onChange={() => setView(key)}
-                    />
-                    <label htmlFor={key} className="ml-2 text-gray-700 capitalize">{key}</label>
-                  </div>
-                ))
-              }
+
+          <div className="">
+
+            <Summary data={groups} timestamp={timestamp} />
+            {timeline && <Timeline timeline={timeline} />}
             </div>
-          </div>
-        )}
-
-
-        <div className="">
-
-          <Summary data={groups} timestamp={timestamp} />
-          {timeline && <Timeline timeline={timeline} />}
-        </div>
+          </>
+          )
+        }
+        
       </div>
     </>
   )
