@@ -35,7 +35,7 @@ function App() {
     timeZoneName: 'short'
   })
   console.log('Current view:', view)
-  console.log('Data for current view:', data[view])
+  // console.log('Data for current view:', data[view])
   return (
     <>
       <div className="container mx-auto px-4 py-8">

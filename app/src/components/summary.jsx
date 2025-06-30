@@ -167,7 +167,7 @@ const Record = ({ record, timestamp }) => {
     const dow = date.getDay() ? date.getDay() : 7 // Adjust for Sunday as 0
     const weekStartTimestamp = timestamp - (dow * 24 * 60 * 60) // Adjust timestamp to start of the week
     const weekEndTimestamp = timestamp + ((6 - dow) * 24 * 60 * 60) // Adjust timestamp to end of the week
-    console.log('Record date:', date, 'Timestamp:', timestamp, 'Dow:', dow)
+    // console.log('Record date:', date, 'Timestamp:', timestamp, 'Dow:', dow)
     const startDate = new Date(weekStartTimestamp * 1000).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
