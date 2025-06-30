@@ -23,7 +23,7 @@ def upload_corpus():
     for date in rrule(DAILY, dtstart=start_date, until=end_date):
         print(f"Uploading files for date: {date:%Y-%m-%d}")
         src_path = SRC.format(date=date)
-        os.system(f"rsync -razq --exclude='*.xml.bz2' {src_path}/* {DEST_HOST}:{DEST}")
+        os.system(f"rsync -razq --exclude='*.*' {src_path}/* {DEST_HOST}:{DEST}")
         
 def remove_old_files(username, key_filename):
     previous_month = (TODAY - timedelta(days=30))
