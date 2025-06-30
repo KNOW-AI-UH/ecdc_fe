@@ -11,4 +11,5 @@ services:
     ports:
       - 8000:8000
     container_name: ecdc_fe
+    command: "npm run dev"
     # command: 'sleep infinity'

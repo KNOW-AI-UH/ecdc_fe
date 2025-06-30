@@ -7,9 +7,9 @@ const fs = require('fs').promises
 // require('express-async-errors')
 
 
-const { PORT, inProduction } = require('@root/server/util/common')
+const { PORT, inProduction } = require('@util/common')
 const logger = require('@util/logger')
-
+const { getJsonData } = require('@root/server/controller')
 
 const app = express()
 // app.use(cors())
@@ -34,6 +34,16 @@ watcher.on('ready', () => {
  * For frontend use hot loading when in development, else serve the static content
  */
 
+app.get('/summary', async (req, res) => { 
+    const fileName = req.query.data || 'weekly'
+    const data = await getJsonData(fileName)
+    if (data) {
+        res.status(200).json(data)
+    } else {
+        res.status(404).json({ error: `Data file ${fileName} not found` })
+    }
+})
+
 async function startServer() { 
     if (!inProduction) {
         const vite = require('vite')
@@ -51,7 +61,7 @@ async function startServer() {
 
         })
         app.use(viteServer.middlewares) // Use Vite middlewares for development
-        app.get('/', async (req, res) => {
+        app.get('*all', async (req, res) => {
             try {
                 // console.log('Rendering index page...')
                 const url = req.originalUrl
@@ -73,7 +83,7 @@ async function startServer() {
         const DIST_PATH = path.resolve(__dirname, './dist')
         const INDEX_PATH = path.resolve(DIST_PATH, 'index.html')
         app.use(express.static(DIST_PATH))
-        app.get('/', (req, res) => res.sendFile(INDEX_PATH))
+        app.get('*all', (req, res) => res.sendFile(INDEX_PATH))
     }
 
 
