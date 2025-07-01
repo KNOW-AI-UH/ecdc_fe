@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 from dateutil.rrule import rrule, DAILY
 import os
-import sys
+import time
 from paramiko import SSHClient
 import argparse
 
@@ -24,6 +24,7 @@ def upload_corpus(username, key_filename):
         print(f"Uploading files for date: {date:%Y-%m-%d}")
         src_path = SRC.format(date=date)
         os.system(f"rsync --dry-run -razq -e \"ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}\" --exclude='*.*' {src_path}/* {DEST_HOST}:{DEST}")
+        time.sleep(5)  # Sleep to avoid overwhelming the server
         
 def remove_old_files(username, key_filename):
     command = 'rm -rf {dest}/medisys-*'.format(dest=DEST)
