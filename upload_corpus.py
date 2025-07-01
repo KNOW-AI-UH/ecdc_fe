@@ -17,17 +17,16 @@ SRC = '/cs/puls/Corpus/Medical/{date:%Y/%m/%d}'
 DEST = '/scratch/project_462000678/corpus'
 
 
-def upload_corpus():
+def upload_corpus(username, key_filename):
     start_date = TODAY - timedelta(days=7)
     end_date = TODAY - timedelta(days=1)
     for date in rrule(DAILY, dtstart=start_date, until=end_date):
         print(f"Uploading files for date: {date:%Y-%m-%d}")
         src_path = SRC.format(date=date)
-        os.system(f"rsync -razq --exclude='*.*' {src_path}/* {DEST_HOST}:{DEST}")
+        os.system(f"rsync --dry-run -razq -e \"ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}\" --exclude='*.*' {src_path}/* {DEST_HOST}:{DEST}")
         
 def remove_old_files(username, key_filename):
-    previous_month = (TODAY - timedelta(days=30))
-    command = 'rm -rf {dest}/medisys-{date:%Y%m}*'.format(dest=DEST, date=previous_month)
+    command = 'rm -rf {dest}/medisys-*'.format(dest=DEST)
     client = SSHClient()
     client.load_system_host_keys()
     client.connect('lumi.csc.fi', username=username, key_filename=key_filename)
@@ -49,6 +48,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     
-    upload_corpus()
+    
     if args.auto_clean_up:
         remove_old_files(args.username, args.key_filename)
+    upload_corpus()
