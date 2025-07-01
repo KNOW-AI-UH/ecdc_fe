@@ -251,7 +251,7 @@ const Record = ({ record, timestamp }) => {
                 {
                     Object.keys(summary.summary).map((key, index) => (
                         <li key={index} className="block text-gray-700 mb-1">
-                            <strong>{key.charAt(0).toUpperCase() + key.slice(1)}</strong>
+                            <strong>- {key.charAt(0).toUpperCase() + key.slice(1)}</strong>
                             <p className="text-gray-600 text-sm">
                                 {summary.summary[key]}
                             </p>
