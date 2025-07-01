@@ -23,7 +23,7 @@ def upload_corpus(username, key_filename):
     for date in rrule(DAILY, dtstart=start_date, until=end_date):
         print(f"Uploading files for date: {date:%Y-%m-%d}")
         src_path = SRC.format(date=date)
-        os.system(f"rsync -razq  -e \"ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}\" --exclude='*.*' {src_path}/* {DEST_HOST}:{DEST}")
+        os.system(f"rsync --dry-run -razq -e \"ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}\" --exclude='*.*' {src_path}/* {DEST_HOST}:{DEST}")
         
 def remove_old_files(username, key_filename):
     command = 'rm -rf {dest}/medisys-*'.format(dest=DEST)
