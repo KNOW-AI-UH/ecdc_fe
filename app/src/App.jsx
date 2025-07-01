@@ -1,7 +1,7 @@
 import { useState, useEffect, } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faVirus } from '@fortawesome/free-solid-svg-icons'
-import { hiddenFeature } from './common.jsx'
+import { hiddenFeature, images } from './common.jsx'
 import Summary from './components/summary.jsx'
 import Timeline from './components/timeline.jsx'
 import { getData } from './connection.jsx'
@@ -68,8 +68,8 @@ function App() {
         <header className="mb-10">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl md:text-4xl font-bold text-indigo-800">
-              <FontAwesomeIcon icon={faVirus} className="mr-3 text-red-500" />
-              COVID-19 Outbreak Tracker
+              <img src={images.icon} className="mr-3" style={{width: '2em', height: '2em', display: 'inline-block'}} />
+              Epi-Gator Outbreak Tracker
               
             </h1>
             <div className="text-sm text-gray-500">

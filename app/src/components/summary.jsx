@@ -234,7 +234,24 @@ const Record = ({ record, timestamp }) => {
                 { description }
             </p> */}
 
-
+            <div className="bg-indigo-50 p-4 rounded-lg mb-4">
+                <h4 className="font-medium text-indigo-800 mb-2 flex items-center">
+                    <FontAwesomeIcon icon={faChartLine} className="mr-2" />
+                    Outbreak Summary
+                </h4>
+                <ul className="list-disc pl-5">
+                    {
+                        Object.keys(summary.summary).map((key, index) => (
+                            <li key={index} className="block text-gray-700 mb-1">
+                                <strong>- {key.charAt(0).toUpperCase() + key.slice(1)}</strong>
+                                <p className="text-gray-600 text-sm">
+                                    {summary.summary[key]}
+                                </p>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 {events.map((event, index) => (
                     <Event key={index} event={event} />
@@ -242,24 +259,7 @@ const Record = ({ record, timestamp }) => {
                 
             </div>
 
-            <div className="bg-indigo-50 p-4 rounded-lg">
-                <h4 className="font-medium text-indigo-800 mb-2 flex items-center">
-                    <FontAwesomeIcon icon={faChartLine} className="mr-2" />
-                    Outbreak Summary
-                </h4>
-                <ul className="list-disc pl-5">
-                {
-                    Object.keys(summary.summary).map((key, index) => (
-                        <li key={index} className="block text-gray-700 mb-1">
-                            <strong>- {key.charAt(0).toUpperCase() + key.slice(1)}</strong>
-                            <p className="text-gray-600 text-sm">
-                                {summary.summary[key]}
-                            </p>
-                        </li>
-                    ))
-                }
-                </ul>
-            </div>
+            
         </div>
     )
 }
