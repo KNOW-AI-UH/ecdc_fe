@@ -69,7 +69,7 @@ function App() {
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl md:text-4xl font-bold text-indigo-800">
               <img src={images.icon} className="mr-3" style={{width: '2em', height: '2em', display: 'inline-block'}} />
-              Epi-Gator Outbreak Tracker
+              EpiGator Outbreak Tracker
               
             </h1>
             <div className="text-sm text-gray-500">
