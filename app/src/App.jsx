@@ -77,7 +77,7 @@ function App() {
             </div>
           </div>
           <p className="text-lg text-gray-600 max-w-3xl">
-            Comprehensive tracking of COVID-19 outbreaks worldwide with detailed news analysis and timeline visualization.
+            Comprehensive tracking of epidemic outbreaks worldwide with detailed news analysis and timeline visualization.
           </p>
         </header>
 
