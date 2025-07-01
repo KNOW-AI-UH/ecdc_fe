@@ -51,4 +51,4 @@ if __name__ == '__main__':
     
     if args.auto_clean_up:
         remove_old_files(args.username, args.key_filename)
-    upload_corpus(username, key_filename)
+    upload_corpus(args.username, args.key_filename)
