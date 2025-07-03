@@ -8,7 +8,8 @@ import {
     faNewspaper,
     faTags,
     faBolt,
-    faChartBar
+    faChartBar,
+    faFileAlt as faFile,
 } from '@fortawesome/free-solid-svg-icons'
 
 const Event = ({ event }) => { 
@@ -23,6 +24,7 @@ const Event = ({ event }) => {
         summary,
         outbreak_start_date: date,
         is_the_outbreak_over: is_over,
+        original_text: originalText,
     } = event
 
     const statusStringMapper = {
@@ -75,7 +77,8 @@ const Event = ({ event }) => {
                     <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                         <DialogPanel
                             transition
-                            className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+                            style={{ maxWidth: '60em' }}
+                            className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full data-closed:sm:translate-y-0 data-closed:sm:scale-95"
                         >
                         <div className="bg-indigo-700 px-6 py-4 flex justify-between items-center">
                             <DialogTitle className="text-lg font-semibold text-white">Event Extraction Results</DialogTitle >
@@ -174,6 +177,14 @@ const Event = ({ event }) => {
 
                                     </div>
                                 </div>)}
+                                    
+                                <div className='mt-6'>
+                                    <h5 className="font-medium text-gray-800 mb-3 flex items-center">
+                                        <FontAwesomeIcon icon={faFile} className="mr-2 text-indigo-600" />
+                                        Source Text:
+                                    </h5>
+                                    <p className="text-sm text-gray-700 text-justify">{originalText}</p>        
+                                </div>
                             </div>
                         </div>
                         </DialogPanel>
