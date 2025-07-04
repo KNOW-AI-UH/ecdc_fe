@@ -63,7 +63,7 @@ async function startServer() {
         app.use(viteServer.middlewares) // Use Vite middlewares for development
         app.get('*all', async (req, res) => {
             try {
-                // console.log('Rendering index page...')
+                // console.log('Rendering index page for:', req.originalUrl)
                 const url = req.originalUrl
                 const templatePath = path.resolve(__dirname, './index.html')
                 const template = await viteServer.transformIndexHtml(url, await fs.readFile(templatePath, 'utf-8'))

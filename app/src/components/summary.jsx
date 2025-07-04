@@ -33,9 +33,9 @@ const Event = ({ event }) => {
         unknown: 'Unknown status',
     }
     const statusStyleMapper = {
-        yes: 'blue-800',
-        no: 'red-500',
-        unknown: 'gray-800',
+        yes: 'bg-green-100 text-green-800',
+        no: 'bg-red-100 text-red-800',
+        unknown: 'bg-gray-100 text-gray-800',
     }
 
     const dateFormat = {
@@ -50,7 +50,7 @@ const Event = ({ event }) => {
     ]
 
     const randomColor = () => {
-        const colors = ['red', 'blue', 'green', 'yellow', 'purple']
+        const colors = ['text-red-500', 'text-blue-500', 'text-green-500', 'text-yellow-500', 'text-purple-500']
         return colors[Math.floor(Math.random() * colors.length)]
     }
     const locationStringShort = location.value.length > 30 ? `${location.value.slice(0, 30)}...` : location.value
@@ -97,7 +97,7 @@ const Event = ({ event }) => {
                                         </div>
                                     
                                     <span className={
-                                        `text-${statusStyleMapper[is_over.value.toLowerCase()]} text-xs font-medium px-2.5 py-0.5 rounded`}>
+                                        `${statusStyleMapper[is_over.value.toLowerCase()]} text-xs font-medium px-2.5 py-0.5 rounded`}>
                                         {statusStringMapper[is_over.value.toLowerCase()]}
                                     </span>            
                                 </div>

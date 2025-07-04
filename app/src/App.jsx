@@ -65,7 +65,7 @@ function App() {
   return (
     <>
       <div className="container mx-auto px-4 py-8">
-        <header className="mb-10">
+        <header className="mb-15">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl md:text-4xl font-bold text-indigo-800">
               <img src={images.icon} className="mr-3" style={{width: '2em', height: '2em', display: 'inline-block'}} />
@@ -76,9 +76,6 @@ function App() {
               Last updated: <span id="current-date" className="font-medium text-gray-700">{ date }</span>
             </div>
           </div>
-          <p className="text-lg text-gray-600 max-w-3xl">
-            Comprehensive tracking of epidemic outbreaks worldwide with detailed news analysis and timeline visualization.
-          </p>
         </header>
 
         { 
