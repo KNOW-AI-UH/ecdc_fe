@@ -140,6 +140,6 @@ dist
 
 # Stub files for testing
 **/data/*
-
+**/data
 # Design reference files
 ecdc.html
