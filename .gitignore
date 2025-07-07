@@ -135,5 +135,11 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-app/data/*
+# VScode settings
+.vscode/
+
+# Stub files for testing
+**/data/*
+
+# Design reference files
 ecdc.html
