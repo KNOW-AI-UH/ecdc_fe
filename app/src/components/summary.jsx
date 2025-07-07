@@ -285,7 +285,7 @@ const Summary = ({ data, timestamp }) => {
                 <div className="p-6">
                     {
                         data.filter(
-                            record => Object.values(record.summary).every(s => typeof s === 'string')).map(
+                            record => record.summary && record.events?.length).map(
                                 (record, index) => (
                             <Record key={index} record={record} timestamp={timestamp} />
                         ))
