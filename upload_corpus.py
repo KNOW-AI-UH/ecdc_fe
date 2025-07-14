@@ -24,7 +24,8 @@ def upload_corpus(username, key_filename):
         print(f"Uploading files for date: {date:%Y-%m-%d}")
         src_path = SRC.format(date=date)
         account_str = f'-e "ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}"'
-        os.system(f"rsync -razq --exclude='*.*' {src_path}/* {DEST_HOST}:{DEST}")
+        os.system(f"rsync -razq --include='*/' --include='*.paf' --include='[!.]*' --exclude='*' {src_path}/ {DEST_HOST}:{DEST}")
+
         time.sleep(5)  # Sleep to avoid overwhelming the server
         
 def remove_old_files(username, key_filename):
