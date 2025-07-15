@@ -9,7 +9,7 @@ import argparse
 TODAY = datetime.today()
 
 DEFAULT_USERNAME = os.getlogin()
-DEFAULT_KEY_FILENAME = os.path.expanduser('~/.ssh/id_rsa_csc')
+DEFAULT_KEY_FILENAME = os.path.expanduser('~/.ssh/rsa')
 
 # SRC_HOST = 'svm-90'
 DEST_HOST = 'lumi'
