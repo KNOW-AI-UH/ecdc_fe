@@ -18,7 +18,7 @@ DEST = '/scratch/project_462000678/corpus'
 
 
 def upload_corpus(username, key_filename):
-    start_date = TODAY - timedelta(days=7)
+    start_date = TODAY - timedelta(days=2)
     end_date = TODAY - timedelta(days=1)
     for date in rrule(DAILY, dtstart=start_date, until=end_date):
         print(f"Uploading files for date: {date:%Y-%m-%d}")
