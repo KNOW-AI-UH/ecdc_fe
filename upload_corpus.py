@@ -29,7 +29,13 @@ def upload_corpus(username, key_filename):
         os.system(paf_cmd)
 
         # 找没有扩展名的文件（排除包含.的文件名）
-        no_ext_cmd = f"cd {src_path} && find . -type f -printf '%P\\n' | grep -v '\\\\.' >> filelist.txt"
+        no_ext_cmd = (
+            f"cd {src_path} && find . -type f -printf '%P\\n' | "
+            "while read file; do "
+            "base=$(basename \"$file\"); "
+            "if [[ \"$base\" != *.* ]]; then echo \"$file\"; fi; "
+            "done >> filelist.txt"
+        )
         os.system(no_ext_cmd)
         account_str = f'-e "ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}"'
         rsync_cmd = f"rsync -razqO --no-p --files-from={os.path.join(src_path, 'filelist.txt')} {account_str} {src_path}/ {DEST_HOST}:{DEST}"
