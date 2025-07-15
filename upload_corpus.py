@@ -23,10 +23,20 @@ def upload_corpus(username, key_filename):
     for date in rrule(DAILY, dtstart=start_date, until=end_date):
         print(f"Uploading files for date: {date:%Y-%m-%d}")
         src_path = SRC.format(date=date)
-        account_str = f'-e "ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}"'
-        os.system(f"rsync -razq --include='*/' --include='*.paf'  --include='[^.]*'  --exclude='*' {src_path}/ {DEST_HOST}:{DEST}")
 
-        time.sleep(5)  # Sleep to avoid overwhelming the server
+        # 找 .paf 文件
+        paf_cmd = f"cd {src_path} && find . -type f -name '*.paf' > filelist.txt"
+        os.system(paf_cmd)
+
+        # 找没有扩展名的文件（排除包含.的文件名）
+        no_ext_cmd = f"cd {src_path} && find . -type f -printf '%P\\n' | grep -v '\\\\.' >> filelist.txt"
+        os.system(no_ext_cmd)
+
+        account_str = f"-e 'ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}'"
+        rsync_cmd = f"rsync -razq --files-from={os.path.join(src_path, 'filelist.txt')} {account_str} {src_path}/ {DEST_HOST}:{DEST}"
+        os.system(rsync_cmd)
+
+        time.sleep(5)
         
 def remove_old_files(username, key_filename):
     command = 'rm -rf {dest}/medisys-*'.format(dest=DEST)
