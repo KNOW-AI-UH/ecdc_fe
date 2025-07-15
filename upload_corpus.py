@@ -32,7 +32,7 @@ def upload_corpus(username, key_filename):
         no_ext_cmd = f"cd {src_path} && find . -type f -printf '%P\\n' | grep -v '\\\\.' >> filelist.txt"
         os.system(no_ext_cmd)
         account_str = f'-e "ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}"'
-        rsync_cmd = f"rsync -razq --files-from={os.path.join(src_path, 'filelist.txt')} {account_str} {src_path}/ {DEST_HOST}:{DEST}"
+        rsync_cmd = f"rsync -razqO --files-from={os.path.join(src_path, 'filelist.txt')} {account_str} {src_path}/ {DEST_HOST}:{DEST}"
         os.system(rsync_cmd)
 
         time.sleep(5)
