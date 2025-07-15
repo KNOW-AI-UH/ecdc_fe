@@ -24,17 +24,18 @@ def upload_corpus(username, key_filename):
         print(f"Uploading files for date: {date:%Y-%m-%d}")
         src_path = SRC.format(date=date)
 
-        # filelist.txt
-        filelist_path = os.path.join(src_path, "filelist.txt")
-        find_cmd = f"cd {src_path} && find . \\( -type f -name '*.paf' -o -type f ! -name '*.*' \\) > filelist.txt"
-        os.system(find_cmd)
+        # 找 .paf 文件
+        paf_cmd = f"cd {src_path} && find . -type f -name '*.paf' > filelist.txt"
+        os.system(paf_cmd)
 
-        #  filelist.txt 执行 rsync
+        # 找没有扩展名的文件（排除包含.的文件名）
+        no_ext_cmd = f"cd {src_path} && find . -type f -printf '%P\\n' | grep -v '\\\\.' >> filelist.txt"
+        os.system(no_ext_cmd)
+
         account_str = f"-e 'ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}'"
-        rsync_cmd = f"rsync -razq --files-from={filelist_path} {account_str} {src_path}/ {DEST_HOST}:{DEST}"
+        rsync_cmd = f"rsync -razq --files-from={os.path.join(src_path, 'filelist.txt')} {account_str} {src_path}/ {DEST_HOST}:{DEST}"
         os.system(rsync_cmd)
 
-        # 等待
         time.sleep(5)
 def remove_old_files(username, key_filename):
     command = 'rm -rf {dest}/medisys-*'.format(dest=DEST)
