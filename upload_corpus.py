@@ -9,7 +9,7 @@ import argparse
 TODAY = datetime.today()
 
 DEFAULT_USERNAME = os.getlogin()
-DEFAULT_KEY_FILENAME = os.path.expanduser('~/.ssh/id_rsa_csc')
+DEFAULT_KEY_FILENAME = os.path.expanduser('~/.ssh/rsa')
 
 # SRC_HOST = 'svm-90'
 DEST_HOST = 'lumi'
@@ -18,7 +18,7 @@ DEST = '/scratch/project_462000678/corpus'
 
 
 def upload_corpus(username, key_filename):
-    start_date = TODAY - timedelta(days=7)
+    start_date = TODAY - timedelta(days=2)
     end_date = TODAY - timedelta(days=1)
     for date in rrule(DAILY, dtstart=start_date, until=end_date):
         print(f"Uploading files for date: {date:%Y-%m-%d}")
@@ -28,15 +28,13 @@ def upload_corpus(username, key_filename):
         paf_cmd = f"cd {src_path} && find . -type f -name '*.paf' > filelist.txt"
         os.system(paf_cmd)
 
-        # 找没有扩展名的文件（排除包含.的文件名）
-        no_ext_cmd = f"cd {src_path} && find . -type f -printf '%P\\n' | grep -v '\\\\.' >> filelist.txt"
-        os.system(no_ext_cmd)
-
-        account_str = f"-e 'ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}'"
-        rsync_cmd = f"rsync -razq --files-from={os.path.join(src_path, 'filelist.txt')} {account_str} {src_path}/ {DEST_HOST}:{DEST}"
+        account_str = f'-e "ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}"'
+        rsync_cmd = f"rsync -razqO --no-p --files-from={os.path.join(src_path, 'filelist.txt')} {account_str} {src_path}/ {DEST_HOST}:{DEST}"
         os.system(rsync_cmd)
-
+        os.system(f"rsync -razq --exclude='*.*' {src_path}/* {DEST_HOST}:{DEST}")
+        
         time.sleep(5)
+        
 def remove_old_files(username, key_filename):
     command = 'rm -rf {dest}/medisys-*'.format(dest=DEST)
     client = SSHClient()
