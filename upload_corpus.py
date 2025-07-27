@@ -18,23 +18,49 @@ DEST = '/scratch/project_462000678/corpus'
 
 
 def upload_corpus(username, key_filename):
-    start_date = TODAY - timedelta(days=2)
-    end_date = TODAY - timedelta(days=1)
-    for date in rrule(DAILY, dtstart=start_date, until=end_date):
+    start_time = TODAY - timedelta(hours=4)
+    end_time = TODAY
+
+    for date in rrule(DAILY, dtstart=start_time.date(), until=end_time.date()):
         print(f"Uploading files for date: {date:%Y-%m-%d}")
         src_path = SRC.format(date=date)
+        f1 = open('/home/yiheng/paffilelist.txt', 'w')
+        f2 = open('/home/yiheng/filelist.txt', 'w')
+        for name in os.listdir(src_path):
+            if not name.startswith("medisys-"):
+                continue
 
-        # 找 .paf 文件
-        paf_cmd = f"cd {src_path} && find . -type f -name '*.paf' > filelist.txt"
-        os.system(paf_cmd)
+            # 解析时间戳部分：medisys-YYYYMMDD-HHMMSS
+            try:
+                ts_str = name.split('-')[1] + name.split('-')[2]  # "20250701" + "001001"
+                ts = datetime.strptime(ts_str, "%Y%m%d%H%M%S")
+            except Exception as e:
+                print(f"Skip invalid folder name: {name}")
+                continue
+            # 筛选在 4 小时窗口内
+            if start_time <= ts <= end_time:
+                full_path = os.path.join(src_path, name)
+
+                for root, dirs, files in os.walk(full_path):
+                    for file in files:
+                        if file.endswith('.paf'):
+                            f1.write(f"./{name}/{file}\n")
+                        elif ".paf" not in file and not file.startswith("medisys-"):
+                            f2.write(f"./{name}/{file}\n")
+
 
         account_str = f'-e "ssh -i {key_filename} -o StrictHostKeyChecking=no -l {username}"'
-        rsync_cmd = f"rsync -razqO --no-p --files-from={os.path.join(src_path, 'filelist.txt')} {account_str} {src_path}/ {DEST_HOST}:{DEST}"
+        # 上传paf文件
+        rsync_cmd = f"rsync -razqO --no-p --files-from={'/home/yiheng/paffilelist.txt'} {account_str} {src_path}/ {DEST_HOST}:{DEST}"
         os.system(rsync_cmd)
-        os.system(f"rsync -razq --exclude='*.*' {src_path}/* {DEST_HOST}:{DEST}")
-        
+        # 上传没有后缀的文件
+        rsync_cmd = f"rsync -razqO --no-p --files-from={'/home/yiheng/filelist.txt'} {account_str} {src_path}/ {DEST_HOST}:{DEST}"
+        os.system(rsync_cmd)
+
         time.sleep(5)
-        
+        f1.close()
+        f2.close()
+
 def remove_old_files(username, key_filename):
     command = 'rm -rf {dest}/medisys-*'.format(dest=DEST)
     client = SSHClient()
@@ -56,9 +82,6 @@ if __name__ == '__main__':
     parser.add_argument('--key_filename', type=str, default=DEFAULT_KEY_FILENAME,
                         help='Path to the SSH private key file.')
     args = parser.parse_args()
-    
-    
-    
-    if args.auto_clean_up:
-        remove_old_files(args.username, args.key_filename)
+
+    remove_old_files(args.username, args.key_filename)
     upload_corpus(args.username, args.key_filename)
