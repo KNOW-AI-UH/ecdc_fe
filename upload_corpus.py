@@ -14,11 +14,11 @@ DEFAULT_KEY_FILENAME = os.path.expanduser('~/.ssh/rsa')
 # SRC_HOST = 'svm-90'
 DEST_HOST = 'lumi'
 SRC = '/cs/puls/Corpus/Medical/{date:%Y/%m/%d}'
-DEST = '/scratch/project_462000678/corpus'
+DEST = '/scratch/project_462001042/corpus'
 
 
 def upload_corpus(username, key_filename):
-    start_time = TODAY - timedelta(hours=4)
+    start_time = TODAY - timedelta(hours=8)
     end_time = TODAY
 
     for date in rrule(DAILY, dtstart=start_time.date(), until=end_time.date()):
@@ -42,7 +42,7 @@ def upload_corpus(username, key_filename):
             except Exception as e:
                 print(f"Skip invalid folder name: {name}")
                 continue
-            # 筛选在 4 小时窗口内
+            # 筛选在 8 小时窗口内
             if start_time <= ts <= end_time:
                 full_path = os.path.join(src_path, name)
 
