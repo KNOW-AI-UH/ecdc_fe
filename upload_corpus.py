@@ -26,6 +26,11 @@ def upload_corpus(username, key_filename):
         src_path = SRC.format(date=date)
         f1 = open('/home/yiheng/paffilelist.txt', 'w')
         f2 = open('/home/yiheng/filelist.txt', 'w')
+        
+        if os.path.exists(src_path) is False:
+            print(f"Source path does not exist: {src_path}")
+            continue
+        
         for name in os.listdir(src_path):
             if not name.startswith("medisys-"):
                 continue
